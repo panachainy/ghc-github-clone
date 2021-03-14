@@ -7,27 +7,12 @@ get_data_raw() {
     echo $(curl -H "Accept: application/vnd.github.V3.raw" $1)
 }
 
-# remove_new_line() {
-#     echo $(echo "$1" | sed ':a;N;$!ba;s/\n//g')
-# }
-
-# write_file_from_blob_type() {
-#     echo $(remove_new_line "$1") | json content | base64 -d > $2
-# }
-
 # url / type / path
 directory_process() {
     local current_json_data
     current_json_data=$(get_data "$1")
-    ## for test
-    # current_json_data="$1"
 
-    # local removed_line_data
-    # removed_line_data=$(remove_new_line "$current_json_data")
-
-    echo $2
     if [ "$2" = "tree" ]; then
-        echo "xxxx"
         types=$(echo $current_json_data | json tree | json -a type)
         paths=$(echo $current_json_data | json tree | json -a path)
         urls=$(echo $current_json_data | json tree | json -a url)
@@ -53,6 +38,11 @@ directory_process() {
             echo $path
             echo $url
             echo "========="
+
+            # TODO: try recursive
+            directory_process() $url $type
+
+            echo "asdioquwidouasioduoiasd"
 
             count=$(($count + 1))
         done
